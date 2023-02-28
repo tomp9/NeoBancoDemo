@@ -32,13 +32,13 @@ namespace NeoBancoDemo.Data.Repositories
 
         public async Task<Cliente> GetCliente(int id)
         {
-            return await _context. Clientes.FindAsync(id);
+            return await _context.Clientes.Include(c => c.Persona).FirstOrDefaultAsync(x=>x.ClienteId == id);
         }
 
 
         public async Task<ActionResult<IEnumerable<Cliente>>> GetClientes()
         {
-            return await _context.Clientes.ToListAsync();
+            return await _context.Clientes.Include(c=>c.Persona).ToListAsync();
         }
 
         public async Task<int> InsertCliente(Cliente cliente)

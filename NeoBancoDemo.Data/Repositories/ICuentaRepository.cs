@@ -1,4 +1,6 @@
-﻿    using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using NeoBancoDemo.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,12 +10,13 @@ namespace NeoBancoDemo.Data.Repositories
 {
     public interface ICuentaRepository
     {
-        Task<IEnumerable<ICuentaRepository>> GetCuenta();
-        Task<ICuentaRepository> GetCuenta(int id);
+        bool CuentaExist(int id);
+        Task<ActionResult<IEnumerable<Cuenta>>> GetCuentas();
+        Task<Cuenta> GetCuenta(int id);
 
-        Task<ICuentaRepository> InsertCuenta(ICuentaRepository cliente);
+        Task<int> InsertCuenta(Cuenta cuenta);
 
-        Task<ICuentaRepository> UpdateCuenta(int id, ICuentaRepository cliente);
-        Task DeleteCuenta(int id);
+        Task<int> UpdateCuenta(int id, Cuenta cuenta);
+        Task<int> DeleteCuenta(Cuenta cuenta);
     }
 }

@@ -46,9 +46,9 @@ public partial class NeoBancoDemoContext : DbContext
             entity.Property(e => e.PersonaId).HasColumnName("persona_id");
 
             //entity.HasOne(d => d.Persona)
-              //  .WithOne(p => p.Cliente)
-              //  .HasForeignKey<Cliente>(d => d.PersonaId)
-              //  .HasConstraintName("FK_Cliente_Persona");
+            //    .WithOne(p => p.Cliente)
+            //    .HasForeignKey<Cliente>(d => d.PersonaId)
+            //    .HasConstraintName("FK_Cliente_Persona");
         });
 
 
@@ -135,6 +135,11 @@ public partial class NeoBancoDemoContext : DbContext
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("telefono");
+            
+            entity.Property(e => e.Direccion)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("direccion");
         });
 
 

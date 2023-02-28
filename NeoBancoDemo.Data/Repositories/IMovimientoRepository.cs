@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using NeoBancoDemo.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,12 +10,14 @@ namespace NeoBancoDemo.Data.Repositories
 {
     public interface IMovimientoRepository
     {
-        Task<IEnumerable<IMovimientoRepository>> GetMovimiento();
-        Task<IMovimientoRepository> GetMovimiento(int id);
+        Task<ActionResult<IEnumerable<Movimiento>>> GetMovimientos();
+        Task<Movimiento> GetMovimiento(int id);
 
-        Task<IMovimientoRepository> InsertMovimiento(IMovimientoRepository cliente);
+        Task<int> InsertMovimiento(Movimiento movimiento);
 
-        Task<IMovimientoRepository> UpdateMovimiento(int id, IMovimientoRepository cliente);
-        Task DeleteMovimiento(int id);
+        Task<int> UpdateMovimiento(int id, Movimiento movimiento);
+        Task<int> DeleteMovimiento(Movimiento movimiento);
+
+        bool MovimientoExist(int id);
     }
 }

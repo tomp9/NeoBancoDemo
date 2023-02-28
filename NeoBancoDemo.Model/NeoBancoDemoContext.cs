@@ -6,9 +6,6 @@ namespace NeoBancoDemo.Models;
 
 public partial class NeoBancoDemoContext : DbContext
 {
-    public NeoBancoDemoContext()
-    {
-    }
 
     public NeoBancoDemoContext(DbContextOptions<NeoBancoDemoContext> options)
         : base(options)
@@ -33,21 +30,27 @@ public partial class NeoBancoDemoContext : DbContext
         {
             entity.ToTable("Cliente");
 
-            entity.HasIndex(e => e.PersonaId, "IX_Cliente_persona_id");
+            entity.HasIndex(e => e.PersonaId, "IX_Cliente_persona_id")
+                .IsUnique();
 
             entity.Property(e => e.ClienteId)
                 .ValueGeneratedNever()
                 .HasColumnName("cliente_id");
+
             entity.Property(e => e.Contrasena)
                 .HasColumnType("numeric(4, 0)")
                 .HasColumnName("contrasena");
+
             entity.Property(e => e.Estado).HasColumnName("estado");
+
             entity.Property(e => e.PersonaId).HasColumnName("persona_id");
 
-            entity.HasOne(d => d.Persona).WithMany(p => p.Clientes)
-                .HasForeignKey(d => d.PersonaId)
-                .HasConstraintName("FK_Cliente_Persona");
+            //entity.HasOne(d => d.Persona)
+              //  .WithOne(p => p.Cliente)
+              //  .HasForeignKey<Cliente>(d => d.PersonaId)
+              //  .HasConstraintName("FK_Cliente_Persona");
         });
+
 
         modelBuilder.Entity<Cuenta>(entity =>
         {
@@ -105,32 +108,35 @@ public partial class NeoBancoDemoContext : DbContext
 
         modelBuilder.Entity<Persona>(entity =>
         {
-            entity.HasKey(e => e.PersonaId)
-                .HasName("IX_persona_id")
-                .IsClustered(false);
-
             entity.ToTable("Persona");
 
-            entity.HasIndex(e => e.PersonaId, "IX_Persona_num_identificacion_index").IsUnique();
+            entity.HasIndex(e => e.PersonaId, "IX_Persona_num_identificacion_index")
+                .IsUnique();
 
             entity.Property(e => e.PersonaId).HasColumnName("persona_id");
+
             entity.Property(e => e.Edad).HasColumnName("edad");
+
             entity.Property(e => e.Genero)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("genero");
+
             entity.Property(e => e.Identificacion)
                 .HasMaxLength(12)
                 .IsUnicode(false)
                 .HasColumnName("identificacion");
+
             entity.Property(e => e.Nombre)
                 .HasMaxLength(100)
                 .HasColumnName("nombre");
+
             entity.Property(e => e.Telefono)
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("telefono");
         });
+
 
         OnModelCreatingPartial(modelBuilder);
     }

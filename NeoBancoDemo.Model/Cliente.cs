@@ -3,8 +3,9 @@ using System.Collections.Generic;
 
 namespace NeoBancoDemo.Models;
 
-public partial class Cliente
+public partial class Cliente 
 {
+
     public int ClienteId { get; set; }
 
     public decimal Contrasena { get; set; }
@@ -15,5 +16,11 @@ public partial class Cliente
 
     public virtual ICollection<Cuenta> Cuenta { get; } = new List<Cuenta>();
 
-    public virtual Persona Persona { get; set; } = null!;
+    //public virtual Persona Persona { get; set; } = null!;
+
+
+    public static explicit operator Cliente(Task<Cliente> v)
+    {
+        throw new NotImplementedException();
+    }
 }

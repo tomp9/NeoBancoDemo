@@ -17,5 +17,5 @@ public partial class Persona
 
     public string Telefono { get; set; } = null!;
 
-    public virtual ICollection<Cliente> Clientes { get; } = new List<Cliente>();
+    public virtual Cliente? Cliente { get; set; }
 }

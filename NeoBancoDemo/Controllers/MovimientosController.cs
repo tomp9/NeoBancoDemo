@@ -37,7 +37,7 @@ namespace NeoBancoDemo.Controllers
 
             if (movimiento == null)
             {
-                return NotFound();
+                return NotFound(new JsonResult(new { MensajeError = "No se encontró el movimiento con el Id " + id }));
             }
 
             return movimiento;
@@ -52,6 +52,11 @@ namespace NeoBancoDemo.Controllers
             {
                 return BadRequest();
             }
+            var cuenta = _context.Cuenta.FirstOrDefault(x => x.CuentaId == movimiento.CuentaId);
+            if (cuenta == null)
+            {
+                return NotFound(new JsonResult(new { MensajeError = "No se encontró la cuenta con el Id " + movimiento.CuentaId }));
+            }
 
             _context.Entry(movimiento).State = EntityState.Modified;
 
@@ -63,15 +68,18 @@ namespace NeoBancoDemo.Controllers
             {
                 if (!MovimientoExists(id))
                 {
-                    return NotFound();
+                    return NotFound(new JsonResult(new { MensajeError = "No se encontró el movimiento con el Id " + id })); ;
                 }
                 else
                 {
                     throw;
                 }
             }
+            cuenta.SaldoInicial = movimiento.SaldoFinal;
+            CuentaRepository cuentaRepository = new CuentaRepository(_context);
+            await cuentaRepository.UpdateCuenta(cuenta.CuentaId, cuenta);
 
-            return NoContent();
+            return StatusCode(200, new JsonResult(new { movimientoActualizado = movimiento })); ;
         }
 
         // POST: api/Movimientos
@@ -79,8 +87,13 @@ namespace NeoBancoDemo.Controllers
         [HttpPost]
         public async Task<ActionResult<Movimiento>> PostMovimiento(Movimiento movimiento)
         {
-            var cuenta = _context.Cuenta.FirstOrDefault(x=>x.CuentaId == movimiento.CuentaId);          
-            
+            var cuenta = _context.Cuenta.FirstOrDefault(x=>x.CuentaId == movimiento.CuentaId);
+            if (cuenta == null)
+            {
+                return NotFound(new JsonResult(new { MensajeError = "No se encontró la cuenta con el Id " + movimiento.CuentaId }));
+            }
+
+            movimiento.SaldoInicial = cuenta.SaldoInicial;
             if (movimiento.TipoMovimiento.ToUpper() == "Credito".ToUpper())
             {
                 try
@@ -93,8 +106,12 @@ namespace NeoBancoDemo.Controllers
                     return StatusCode(500, new JsonResult(new { Message = ex.Message }) );
                 }
             }
-            else {
+            else if (movimiento.TipoMovimiento.ToUpper() == "Debito".ToUpper() ) {
                 cuenta.SaldoInicial = MovimientoBusiness.RealizarOperacionDebito(cuenta.SaldoInicial, movimiento.Valor);
+            }
+            else
+            {
+                return StatusCode(500, new JsonResult(new { Message = "El tipo de movimiento debe se Credito o Debito" }));
             }
 
             CuentaRepository cuentaRepository = new CuentaRepository(_context);
@@ -129,13 +146,13 @@ namespace NeoBancoDemo.Controllers
             var movimiento = await _context.Movimientos.FindAsync(id);
             if (movimiento == null)
             {
-                return NotFound();
+                return NotFound(new JsonResult(new { MensajeError = "No se encontró el movimiento con el Id " + id }));
             }
 
             _context.Movimientos.Remove(movimiento);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return StatusCode(200, new JsonResult(new { MovimientoEliminada = movimiento }));
         }
 
         private bool MovimientoExists(int id)

@@ -36,7 +36,7 @@ namespace NeoBancoDemo.Controllers
 
             if (cliente == null)
             {
-                return NotFound();
+                return NotFound(new JsonResult(new { MensajeError = "No se encontró el cliente con el Id " + id }));
             }
 
             return Ok(cliente);
@@ -61,7 +61,7 @@ namespace NeoBancoDemo.Controllers
             {
                 if (!ClienteExists(id))
                 {
-                    return NotFound();
+                    return NotFound(new JsonResult(new { MensajeError = "No se encontró el cliente con el Id " + id }));
                 }
                 else
                 {
@@ -69,7 +69,7 @@ namespace NeoBancoDemo.Controllers
                 }
             }
 
-            return Ok(NoContent());
+            return StatusCode(200, new JsonResult(new { Cliente = cliente }));
         }
 
         // POST: api/Clientes
@@ -101,15 +101,15 @@ namespace NeoBancoDemo.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCliente(int id)
         {
-            var cliente =(Cliente) _clienteRepository.GetCliente(id);
+            var cliente =(Cliente) await _clienteRepository.GetCliente(id);
             if (cliente == null)
             {
-                return NotFound();
+                return NotFound(new JsonResult(new { MensajeError = "No se encontró el cliente con el Id " + id }));
             }
 
             await _clienteRepository.DeleteCliente(cliente);
     
-            return Ok(NoContent());
+            return StatusCode(200, new JsonResult(new { ClienteEliminado = cliente }));
         }
 
         private bool ClienteExists(int id)

@@ -15,7 +15,7 @@ namespace NeoBancoDemo.Controllers
         }
 
         // GET: api/Reportes/?fechaInicial=10-12-2020&fechaFinal=10-11-2023
-        [HttpGet("")]
+        [HttpGet("api/Reportes/")]
         public IActionResult Index(string fechaInicial, string fechaFinal, string numDocCliente)
         {
             DateTime fechaIni;
@@ -42,7 +42,7 @@ namespace NeoBancoDemo.Controllers
 
             foreach (Cuenta cuenta in cuentas)
             {
-                movimientos.AddRange(cuenta.Movimientos.Where(m=>m.FechaMovimiento >= fechaIni && m.FechaMovimiento <= fechaFin));
+                movimientos.AddRange(cuenta.Movimientos.Where(m=>m.FechaMovimiento >= fechaIni && m.FechaMovimiento <= fechaFin).OrderByDescending(x=>x.MovimientoId));
             }
 
             foreach (Cuenta cuenta in cuentas)

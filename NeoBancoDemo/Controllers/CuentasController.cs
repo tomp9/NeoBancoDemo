@@ -35,7 +35,7 @@ namespace NeoBancoDemo.Controllers
 
             if (cuenta == null)
             {
-                return NotFound();
+                return NotFound(new JsonResult(new { MensajeError = "No se encontró la cuenta con el Id " + id }));
             }
 
             return cuenta;
@@ -61,7 +61,7 @@ namespace NeoBancoDemo.Controllers
             {
                 if (!CuentaExists(id))
                 {
-                    return NotFound();
+                    return NotFound(new JsonResult(new { MensajeError = "No se encontró la cuenta con el Id " + id }));
                 }
                 else
                 {
@@ -69,7 +69,7 @@ namespace NeoBancoDemo.Controllers
                 }
             }
 
-            return NoContent();
+            return StatusCode(200, new JsonResult(new { CuentaActualizada = cuenta })); ;
         }
 
         // POST: api/Cuentas
@@ -104,13 +104,13 @@ namespace NeoBancoDemo.Controllers
             var cuenta = await _context.Cuenta.FindAsync(id);
             if (cuenta == null)
             {
-                return NotFound();
+                return NotFound(new JsonResult(new { MensajeError = "No se encontró la cuenta con el Id " + id }));
             }
 
             _context.Cuenta.Remove(cuenta);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return StatusCode(200, new JsonResult(new { CuentaEliminada = cuenta }));
         }
 
         private bool CuentaExists(int id)

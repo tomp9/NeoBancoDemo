@@ -35,7 +35,7 @@ namespace NeoBancoDemo.Controllers
 
             if (persona == null)
             {
-                return NotFound();
+                return new JsonResult(new { MensajeError = "No se encontró la persona con el Id " + id });
             }
 
             return persona;
@@ -61,7 +61,7 @@ namespace NeoBancoDemo.Controllers
             {
                 if (!PersonaExists(id))
                 {
-                    return NotFound();
+                    return new JsonResult(new { MensajeError = "No se encontró la persona con el Id " + id });
                 }
                 else
                 {
@@ -69,7 +69,7 @@ namespace NeoBancoDemo.Controllers
                 }
             }
 
-            return NoContent();
+            return StatusCode(200 ,new JsonResult(new{ Persona = persona}));
         }
 
         // POST: api/Persona
@@ -90,13 +90,13 @@ namespace NeoBancoDemo.Controllers
             var persona = await _context.Personas.FindAsync(id);
             if (persona == null)
             {
-                return NotFound();
+                return NotFound(new JsonResult(new { MensajeError = "No se encontró la persona con el Id " + id }));
             }
 
             _context.Personas.Remove(persona);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return StatusCode(200, new JsonResult(new { PersonaEliminada = persona}));
         }
 
         private bool PersonaExists(int id)

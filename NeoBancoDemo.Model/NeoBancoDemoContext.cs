@@ -21,8 +21,9 @@ public partial class NeoBancoDemoContext : DbContext
     public virtual DbSet<Persona> Personas { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=LAPTOP-SB693B4T\\SQLEXPRESS;Database=NeoBancoDemo;Trusted_Connection=True;Trust Server Certificate=true;");
+    {
+
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -34,7 +35,7 @@ public partial class NeoBancoDemoContext : DbContext
                 .IsUnique();
 
             entity.Property(e => e.ClienteId)
-                .ValueGeneratedNever()
+                .ValueGeneratedOnAdd()
                 .HasColumnName("cliente_id");
 
             entity.Property(e => e.Contrasena)
@@ -44,11 +45,11 @@ public partial class NeoBancoDemoContext : DbContext
             entity.Property(e => e.Estado).HasColumnName("estado");
 
             entity.Property(e => e.PersonaId).HasColumnName("persona_id");
+            entity.HasOne(d => d.Persona)
+            .WithOne(p => p.Cliente)
+            .HasForeignKey<Cliente>(d => d.PersonaId)
+            .HasConstraintName("FK_Cliente_Persona");
 
-            //entity.HasOne(d => d.Persona)
-            //    .WithOne(p => p.Cliente)
-            //    .HasForeignKey<Cliente>(d => d.PersonaId)
-            //    .HasConstraintName("FK_Cliente_Persona");
         });
 
 
@@ -59,7 +60,7 @@ public partial class NeoBancoDemoContext : DbContext
             entity.HasIndex(e => e.NumCuenta, "IX_Cuenta_num_cuenta").IsUnique();
 
             entity.Property(e => e.CuentaId)
-                .ValueGeneratedNever()
+                .ValueGeneratedOnAdd()
                 .HasColumnName("cuenta_id");
             entity.Property(e => e.ClienteId).HasColumnName("cliente_id");
             entity.Property(e => e.Estado).HasColumnName("estado");
@@ -87,7 +88,7 @@ public partial class NeoBancoDemoContext : DbContext
             entity.HasIndex(e => e.MovimientoId, "IX_Movimiento_cuenta_id");
 
             entity.Property(e => e.MovimientoId)
-                //.ValueGeneratedNever()
+                .ValueGeneratedOnAdd()
                 .HasColumnName("movimiento_id");
             entity.Property(e => e.CuentaId).HasColumnName("cuenta_id");
             entity.Property(e => e.SaldoInicial)
@@ -106,10 +107,11 @@ public partial class NeoBancoDemoContext : DbContext
             entity.Property(e => e.SaldoFinal)
                 .HasColumnType("decimal(18, 0)")
                 .HasColumnName("saldo_final");
-
-            //entity.HasOne(d => d.Cuenta).WithMany(p => p.Movimientos)
-            //    .HasForeignKey(d => d.CuentaId)
-            //    .HasConstraintName("FK_Movimiento_Cuenta");
+            entity.HasOne(d => d.Cuenta)
+                .WithMany(p => p.Movimientos)
+                .HasForeignKey(d => d.CuentaId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_Movimiento_Cuenta");
         });
 
         modelBuilder.Entity<Persona>(entity =>
@@ -119,7 +121,8 @@ public partial class NeoBancoDemoContext : DbContext
             entity.HasIndex(e => e.PersonaId, "IX_Persona_num_identificacion_index")
                 .IsUnique();
 
-            entity.Property(e => e.PersonaId).HasColumnName("persona_id");
+            entity.Property(e => e.PersonaId).HasColumnName("persona_id")
+                .ValueGeneratedOnAdd();
 
             entity.Property(e => e.Edad).HasColumnName("edad");
 

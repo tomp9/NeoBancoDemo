@@ -5,7 +5,7 @@
 
         public static decimal RealizarOperacionCredito(decimal saldoCuenta, decimal valorMovimiento)
         {
-            if (saldoCuenta-valorMovimiento >0)
+            if (saldoCuenta-valorMovimiento >=0)
             {
                 return saldoCuenta - valorMovimiento;
             }

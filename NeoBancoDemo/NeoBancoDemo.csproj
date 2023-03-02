@@ -28,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\NeoBancoDemo.Business\NeoBancoDemo.Business.csproj" />
     <ProjectReference Include="..\NeoBancoDemo.Data\NeoBancoDemo.Data.csproj" />
     <ProjectReference Include="..\NeoBancoDemo.Model\NeoBancoDemo.Model.csproj" />
   </ItemGroup>

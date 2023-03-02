@@ -32,7 +32,7 @@ namespace NeoBancoDemo.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Cliente>> GetCliente(int id)
         {
-            var cliente = await _clienteRepository.GetCliente(id);    //await _context.Clientes.FindAsync(id);
+            var cliente = await _clienteRepository.GetCliente(id);
 
             if (cliente == null)
             {

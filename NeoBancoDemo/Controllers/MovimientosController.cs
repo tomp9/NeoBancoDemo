@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NeoBancoDemo.Business;
+using NeoBancoDemo.Data.Repositories;
 using NeoBancoDemo.Models;
 
 namespace NeoBancoDemo.Controllers
@@ -77,6 +79,29 @@ namespace NeoBancoDemo.Controllers
         [HttpPost]
         public async Task<ActionResult<Movimiento>> PostMovimiento(Movimiento movimiento)
         {
+            var cuenta = _context.Cuenta.FirstOrDefault(x=>x.CuentaId == movimiento.CuentaId);          
+            
+            if (movimiento.TipoMovimiento.ToUpper() == "Credito".ToUpper())
+            {
+                try
+                {
+                    cuenta.SaldoInicial = MovimientoBusiness.RealizarOperacionCredito(cuenta.SaldoInicial , movimiento.Valor);
+
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new JsonResult(new { Message = ex.Message }) );
+                }
+            }
+            else {
+                cuenta.SaldoInicial = MovimientoBusiness.RealizarOperacionDebito(cuenta.SaldoInicial, movimiento.Valor);
+            }
+
+            CuentaRepository cuentaRepository = new CuentaRepository(_context);
+            await cuentaRepository.UpdateCuenta(cuenta.CuentaId,cuenta);
+
+            movimiento.SaldoFinal = cuenta.SaldoInicial;
+
             _context.Movimientos.Add(movimiento);
             try
             {

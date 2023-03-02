@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using NeoBancoDemo.Data.Repositories;
 using NeoBancoDemo.Models;
 using System.Configuration;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,10 +15,15 @@ builder.Services.AddSwaggerGen();
 
 string sqlConnectionStr = builder.Configuration.GetConnectionString("SqlConnectionStr");
 
-//builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+}); ;
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddDbContext<NeoBancoDemoContext>(
     options => options.UseSqlServer(sqlConnectionStr));
+
+
 
 var app = builder.Build();
 

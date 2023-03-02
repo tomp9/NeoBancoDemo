@@ -87,12 +87,12 @@ public partial class NeoBancoDemoContext : DbContext
             entity.HasIndex(e => e.MovimientoId, "IX_Movimiento_cuenta_id");
 
             entity.Property(e => e.MovimientoId)
-                .ValueGeneratedNever()
+                //.ValueGeneratedNever()
                 .HasColumnName("movimiento_id");
             entity.Property(e => e.CuentaId).HasColumnName("cuenta_id");
-            entity.Property(e => e.Saldo)
+            entity.Property(e => e.SaldoInicial)
                 .HasColumnType("decimal(18, 0)")
-                .HasColumnName("saldo");
+                .HasColumnName("saldo_inicial");
             entity.Property(e => e.TipoMovimiento)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -100,10 +100,16 @@ public partial class NeoBancoDemoContext : DbContext
             entity.Property(e => e.Valor)
                 .HasColumnType("decimal(18, 0)")
                 .HasColumnName("valor");
+            entity.Property(e => e.FechaMovimiento)
+                .HasColumnType("date")
+                .HasColumnName("fecha_movimiento");
+            entity.Property(e => e.SaldoFinal)
+                .HasColumnType("decimal(18, 0)")
+                .HasColumnName("saldo_final");
 
-            entity.HasOne(d => d.Cuenta).WithMany(p => p.Movimientos)
-                .HasForeignKey(d => d.CuentaId)
-                .HasConstraintName("FK_Movimiento_Cuenta");
+            //entity.HasOne(d => d.Cuenta).WithMany(p => p.Movimientos)
+            //    .HasForeignKey(d => d.CuentaId)
+            //    .HasConstraintName("FK_Movimiento_Cuenta");
         });
 
         modelBuilder.Entity<Persona>(entity =>

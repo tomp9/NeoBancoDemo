@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace NeoBancoDemo.Data.Repositories
 {
-    internal class CuentaRepository : ICuentaRepository
+    public class CuentaRepository : ICuentaRepository
     {
         private readonly NeoBancoDemoContext _context;
 
